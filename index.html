@@ -55,8 +55,6 @@ td{
 <input id="n" type="number" min="0" max="40" step="1" value="0">
 </label>
 
-<button onclick="calc()">計算</button>
-
 <hr>
 
 <table>
@@ -145,6 +143,10 @@ const xEl=x;
 const yEl=y;
 const zEl=z;
 const nEl=n;
+
+[xEl, yEl, zEl, nEl].forEach(el => {
+    el.addEventListener("input", calc);
+});
 
 calc();
 </script>
