@@ -1,153 +1,50 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
+
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>シャクドウ計算機</title>
-
 <style>
-body{
-    font-family:sans-serif;
-    background:#f5f5f5;
-    max-width:700px;
-    margin:20px auto;
-    padding:20px;
-}
-.box{
-    background:#fff;
-    padding:16px;
-    border-radius:8px;
-}
-label{
-    display:block;
-    margin:8px 0;
-}
-input{
-    width:80px;
-}
-table{
-    width:100%;
-}
-td{
-    padding:4px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="box">
+body{font-family:sans-serif;background:#f5f5f5;max-width:700px;margin:20px auto;padding:20px}
+label{display:block;margin:8px 0}input{width:80px}
+.box{background:#fff;padding:16px;border-radius:8px}
+table{width:100%}td{padding:4px}
+</style></head><body><div class="box">
 <h2>シャクドウ計算機</h2>
-
-<label>1種類目枚数
-<input id="x" type="number" min="0" max="40" step="1" value="0">
-</label>
-
-<label>2種類目枚数
-<input id="y" type="number" min="0" max="40" step="1" value="0">
-</label>
-
-<label>その他枚数
-<input id="z" type="number" min="0" max="40" step="1" value="0">
-</label>
-
-<label>ドロー枚数
-<input id="n" type="number" min="0" max="40" step="1" value="0">
-</label>
-
+<label>1種類目枚数<input id=x type=number min=0 max=40 step=1 value=0></label>
+<label>2種類目枚数<input id=y type=number min=0 max=40 step=1 value=0></label>
+<label>その他枚数<input id=z type=number min=0 max=40 step=1 value=0></label>
+<label>ドロー枚数<input id=n type=number min=0 max=40 step=1 value=0></label>
 <button onclick="calc()">計算</button>
-
 <hr>
-
 <table>
-<tr>
-<td>P(A)（aが4枚以上）</td>
-<td id="pa"></td>
-</tr>
-
-<tr>
-<td>P(B)（bが4枚以上）</td>
-<td id="pb"></td>
-</tr>
-
-<tr>
-<td><b>P(A∪B)（aまたはbが4枚以上）</b></td>
-<td id="p"></td>
-</tr>
-</table>
-
-</div>
-
+<tr><td>P(A)（aが4枚以上）</td>
+<td id="pa"></td></tr>
+<tr><td>P(B)（bが4枚以上）</td>
+<td id="pb"></td></tr>
+<tr><td><b>P(A∪B)（aまたはbが4枚以上）</b></td>
+<td id="p"></td></tr>
+</table></div>
 <script>
 function comb(n,r){
-    if(r<0 || r>n) return 0;
-    r=Math.min(r,n-r);
-    let v=1;
-    for(let i=1;i<=r;i++){
-        v=v*(n-r+i)/i;
-    }
-    return v;
+ if(r<0||r>n)return 0;
+ r=Math.min(r,n-r); let v=1;
+ for(let i=1;i<=r;i++) v=v*(n-r+i)/i;
+ return v;
 }
-
 function calc(){
-
-    const x=+xEl.value;
-    const y=+yEl.value;
-    const z=+zEl.value;
-    const n=+nEl.value;
-    const k=4;
-
-    const N=x+y+z;
-
-    if(n>N){
-        alert("ドロー枚数は総枚数以下にしてください。");
-        return;
-    }
-
-    const D=comb(N,n);
-
-    let PA=0;
-    let PB=0;
-    let PAB=0;
-
-    // P(A)
-    for(let i=k;i<=Math.min(x,n);i++){
-        PA+=comb(x,i)*comb(y+z,n-i);
-    }
-
-    // P(B)
-    for(let j=k;j<=Math.min(y,n);j++){
-        PB+=comb(y,j)*comb(x+z,n-j);
-    }
-
-    // P(A∩B)
-    for(let i=k;i<=Math.min(x,n);i++){
-        for(let j=k;j<=Math.min(y,n-i);j++){
-            const rest=n-i-j;
-            if(rest>=0 && rest<=z){
-                PAB+=comb(x,i)*comb(y,j)*comb(z,rest);
-            }
-        }
-    }
-
-    PA/=D;
-    PB/=D;
-    PAB/=D;
-
-    const PU=PA+PB-PAB;
-
-    pa.textContent=(PA*100).toFixed(2)+" %";
-    pb.textContent=(PB*100).toFixed(2)+" %";
-    p.textContent=(PU*100).toFixed(2)+" %";
+let x=+xEl.value,y=+yEl.value,z=+zEl.value,n=+nEl.value,k=4;
+let N=x+y+z,D=comb(N,n);
+let PA=0,PB=0,PAB=0;
+for(let i=k;i<=Math.min(x,n);i++) PA+=comb(x,i)*comb(y+z,n-i);
+for(let j=k;j<=Math.min(y,n);j++) PB+=comb(y,j)*comb(x+z,n-j);
+for(let i=k;i<=Math.min(x,n);i++){
+ for(let j=k;j<=Math.min(y,n-i);j++){
+   if(n-i-j<=z) PAB+=comb(x,i)*comb(y,j)*comb(z,n-i-j);
+ }}
+PA/=D;PB/=D;PAB/=D;
+let PU=PA+PB-PAB;
+pa.textContent=(PA*100).toFixed(2)+" %";
+pb.textContent=(PB*100).toFixed(2)+" %";
+p.textContent=(PU*100).toFixed(2)+" %";
 }
-
-const xEl=x;
-const yEl=y;
-const zEl=z;
-const nEl=n;
-
-calc();
-</script>
-
-</body>
-</html>
+const xEl=x,yEl=y,zEl=z,nEl=n;calc();
+</script></body></html>
